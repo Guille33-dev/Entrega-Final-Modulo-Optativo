@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  h1= title
+  if error
+    p.error= error
+  form.form(method="POST", action="/classes")
+    label(for="title") Título
+    input(type="text", name="title", id="title", required, minlength="3", maxlength="80", placeholder="Yoga inicial")
+
+    label(for="level") Nivel
+    select(name="level", id="level")
+      option(value="beginner") Beginner
+      option(value="intermediate") Intermediate
+      option(value="advanced") Advanced
+
+    label(for="capacity") Capacidad
+    input(type="number", name="capacity", id="capacity", required, min="1", max="60", value="20")
+
+    label(for="durationMinutes") Duración en minutos
+    input(type="number", name="durationMinutes", id="durationMinutes", min="15", max="180", value="60")
+
+    label(for="startsAt") Fecha y hora
+    input(type="datetime-local", name="startsAt", id="startsAt", required)
+
+    label(for="trainer") Entrenador
+    select(name="trainer", id="trainer", required)
+      each trainer in trainers
+        option(value=trainer._id)= trainer.name
+
+    button.button(type="submit") Guardar clase

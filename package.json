@@ -1,0 +1,27 @@
+{
+  "name": "gymmanager-api-final",
+  "version": "1.0.0",
+  "description": "API final de gimnasio con Node.js, Express, MongoDB, Pug, JWT, tests, OpenAPI, logs, health check y GitHub Actions.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test tests/*.test.js",
+    "coverage": "c8 --reporter=text --reporter=html npm test",
+    "seed:admin": "node scripts/seedAdmin.js"
+  },
+  "keywords": ["node", "express", "mongoose", "jwt", "gym", "api"],
+  "author": "Guillermo Suarez",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "c8": "^10.1.2"
+  }
+}

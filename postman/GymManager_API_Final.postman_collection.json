@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "GymManager API Final",
+    "description": "Colección de Postman para probar todas las rutas principales de la aplicación final de gimnasio.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "trainerId", "value": "" },
+    { "key": "classId", "value": "" },
+    { "key": "memberId", "value": "" },
+    { "key": "bookingId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /auth/register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}" },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "POST /auth/login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "POST /auth/refresh",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" },
+            "url": "{{baseUrl}}/auth/refresh"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trainers CRUD",
+      "item": [
+        { "name": "GET /api/trainers", "request": { "method": "GET", "url": "{{baseUrl}}/api/trainers" } },
+        {
+          "name": "POST /api/trainers",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Laura Martín\",\n  \"specialty\": \"fitness\",\n  \"experienceYears\": 8\n}" },
+            "url": "{{baseUrl}}/api/trainers"
+          }
+        },
+        { "name": "GET /api/trainers/:id", "request": { "method": "GET", "url": "{{baseUrl}}/api/trainers/{{trainerId}}" } },
+        {
+          "name": "PUT /api/trainers/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"experienceYears\": 9\n}" },
+            "url": "{{baseUrl}}/api/trainers/{{trainerId}}"
+          }
+        },
+        { "name": "DELETE /api/trainers/:id", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/trainers/{{trainerId}}" } }
+      ]
+    },
+    {
+      "name": "Classes CRUD",
+      "item": [
+        { "name": "GET /api/classes", "request": { "method": "GET", "url": "{{baseUrl}}/api/classes" } },
+        {
+          "name": "POST /api/classes",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Crossfit avanzado\",\n  \"level\": \"advanced\",\n  \"capacity\": 20,\n  \"startsAt\": \"2026-07-01T10:00:00.000Z\",\n  \"trainer\": \"{{trainerId}}\"\n}" },
+            "url": "{{baseUrl}}/api/classes"
+          }
+        },
+        { "name": "GET /api/classes/:id", "request": { "method": "GET", "url": "{{baseUrl}}/api/classes/{{classId}}" } },
+        {
+          "name": "PUT /api/classes/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"capacity\": 25\n}" },
+            "url": "{{baseUrl}}/api/classes/{{classId}}"
+          }
+        },
+        { "name": "DELETE /api/classes/:id", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/classes/{{classId}}" } }
+      ]
+    },
+    {
+      "name": "Members CRUD",
+      "item": [
+        { "name": "GET /api/members", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/members" } },
+        {
+          "name": "POST /api/members",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Guille Suárez\",\n  \"email\": \"guille@example.com\",\n  \"membershipType\": \"premium\",\n  \"monthlyFee\": 45\n}" },
+            "url": "{{baseUrl}}/api/members"
+          }
+        },
+        { "name": "GET /api/members/:id", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/members/{{memberId}}" } },
+        { "name": "PUT /api/members/:id", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"monthlyFee\": 50\n}" }, "url": "{{baseUrl}}/api/members/{{memberId}}" } },
+        { "name": "DELETE /api/members/:id", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/members/{{memberId}}" } }
+      ]
+    },
+    {
+      "name": "Bookings CRUD",
+      "item": [
+        { "name": "GET /api/bookings", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/bookings" } },
+        { "name": "POST /api/bookings", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"member\": \"{{memberId}}\",\n  \"gymClass\": \"{{classId}}\",\n  \"paid\": true\n}" }, "url": "{{baseUrl}}/api/bookings" } },
+        { "name": "GET /api/bookings/:id", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/bookings/{{bookingId}}" } },
+        { "name": "PUT /api/bookings/:id", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{accessToken}}" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"attended\"\n}" }, "url": "{{baseUrl}}/api/bookings/{{bookingId}}" } },
+        { "name": "DELETE /api/bookings/:id", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }], "url": "{{baseUrl}}/api/bookings/{{bookingId}}" } }
+      ]
+    },
+    {
+      "name": "Pug views",
+      "item": [
+        { "name": "GET /", "request": { "method": "GET", "url": "{{baseUrl}}/" } },
+        { "name": "GET /classes", "request": { "method": "GET", "url": "{{baseUrl}}/classes" } },
+        { "name": "GET /classes/new", "request": { "method": "GET", "url": "{{baseUrl}}/classes/new" } }
+      ]
+    }
+  ]
+}

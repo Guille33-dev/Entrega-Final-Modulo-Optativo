@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1= title
+  if classes.length === 0
+    p No hay clases creadas todavía.
+  else
+    table.table
+      thead
+        tr
+          th Título
+          th Nivel
+          th Capacidad
+          th Duración
+          th Fecha
+          th Entrenador
+          th Activa
+      tbody
+        each gymClass in classes
+          tr
+            td= gymClass.title
+            td= gymClass.level
+            td= gymClass.capacity
+            td #{gymClass.durationMinutes} min
+            td= gymClass.startsAt ? gymClass.startsAt.toLocaleString('es-ES') : 'Sin fecha'
+            td= gymClass.trainer ? gymClass.trainer.name : 'Sin entrenador'
+            td= gymClass.isActive ? 'Sí' : 'No'
+  a.button(href="/classes/new") Crear nueva clase

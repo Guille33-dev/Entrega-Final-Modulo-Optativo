@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: GymManager API - GymClass CRUD
+  version: 1.0.0
+  description: Documento OpenAPI para las operaciones CRUD del recurso de clases del gimnasio.
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+  - url: https://TU-SERVICIO.onrender.com
+    description: Servidor Render
+paths:
+  /api/classes:
+    get:
+      summary: Listar clases
+      tags: [Classes]
+      responses:
+        '200':
+          description: Listado de clases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GymClass'
+    post:
+      summary: Crear una clase
+      tags: [Classes]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GymClassInput'
+      responses:
+        '201':
+          description: Clase creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GymClass'
+        '401':
+          description: No autenticado
+        '403':
+          description: Sin permisos suficientes
+        '400':
+          description: Error de validación
+  /api/classes/{id}:
+    get:
+      summary: Obtener una clase por ID
+      tags: [Classes]
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+      responses:
+        '200':
+          description: Clase encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GymClass'
+        '404':
+          description: Clase no encontrada
+    put:
+      summary: Actualizar una clase
+      tags: [Classes]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GymClassInput'
+      responses:
+        '200':
+          description: Clase actualizada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GymClass'
+        '401':
+          description: No autenticado
+        '403':
+          description: Sin permisos suficientes
+        '404':
+          description: Clase no encontrada
+    delete:
+      summary: Eliminar una clase
+      tags: [Classes]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ObjectId'
+      responses:
+        '200':
+          description: Clase eliminada correctamente
+        '401':
+          description: No autenticado
+        '403':
+          description: Sin permisos suficientes
+        '404':
+          description: Clase no encontrada
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    ObjectId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Identificador MongoDB ObjectId
+  schemas:
+    GymClass:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 665f3b0dcd7d83a30d123456
+        title:
+          type: string
+          example: Crossfit avanzado
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          example: advanced
+        capacity:
+          type: number
+          example: 20
+        startsAt:
+          type: string
+          format: date-time
+          example: '2026-07-01T10:00:00.000Z'
+        trainer:
+          type: string
+          example: 665f3b0dcd7d83a30d654321
+    GymClassInput:
+      type: object
+      required: [title, capacity, startsAt, trainer]
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 80
+          example: Crossfit avanzado
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          example: advanced
+        capacity:
+          type: number
+          minimum: 1
+          maximum: 60
+          example: 20
+        startsAt:
+          type: string
+          format: date-time
+          example: '2026-07-01T10:00:00.000Z'
+        trainer:
+          type: string
+          example: 665f3b0dcd7d83a30d654321
