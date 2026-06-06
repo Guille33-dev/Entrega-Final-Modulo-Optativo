@@ -2,10 +2,11 @@
   "name": "gymmanager-api-final",
   "version": "1.0.0",
   "description": "API final de gimnasio con Node.js, Express, MongoDB, Pug, JWT, tests, OpenAPI, logs, health check y GitHub Actions.",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
+    "start": "node index.js",
+    "dev": "node index.js",
+    "check": "node --check index.js && node --check db.js && node --check app.js && node --check routes/authRoutes.js && node --check routes/userRoutes.js && node --check routes/classRoutes.js && node --check routes/trainerRoutes.js && node --check routes/memberRoutes.js && node --check routes/bookingRoutes.js && node --check routes/healthRoutes.js && node --check routes/pageRoutes.js && node --check middlewares/authMiddleware.js && node --check middlewares/roleMiddleware.js && node --check middlewares/requestLogger.js && node --check middlewares/errorHandler.js && node --check models/User.js && node --check utils/logger.js && node --check utils/tokenUtils.js",
     "test": "node --test tests/*.test.js",
     "coverage": "c8 --reporter=text --reporter=html npm test",
     "seed:admin": "node scripts/seedAdmin.js"

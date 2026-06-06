@@ -1,57 +1,84 @@
-const express = require('express');
-const GymClass = require('../models/GymClass');
-const { authenticate, authorizeRoles } = require('../middlewares/auth');
+const express = require("express");
+const mongoose = require("mongoose");
+const GymClass = require("../models/GymClass");
+const { requireAuth } = require("../middlewares/authMiddleware");
+const { requireRole } = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const classes = await GymClass.find().populate('trainer').sort({ startsAt: 1 });
-    return res.json(classes);
+    const classes = await GymClass.find().populate("trainer").sort({ startsAt: 1 });
+    res.json(classes);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    const gymClass = await GymClass.findById(req.params.id).populate('trainer');
-    if (!gymClass) return res.status(404).json({ message: 'Clase no encontrada' });
-    return res.json(gymClass);
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id de la clase no es válido." });
+    }
+
+    const gymClass = await GymClass.findById(req.params.id).populate("trainer");
+
+    if (!gymClass) {
+      return res.status(404).json({ error: "Clase no encontrada." });
+    }
+
+    res.json(gymClass);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.post('/', authenticate, authorizeRoles('admin', 'trainer'), async (req, res, next) => {
+router.post("/", requireAuth, requireRole("admin", "profesor"), async (req, res, next) => {
   try {
     const gymClass = await GymClass.create(req.body);
-    return res.status(201).json(gymClass);
+    const populatedClass = await gymClass.populate("trainer");
+    res.status(201).json(populatedClass);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.put('/:id', authenticate, authorizeRoles('admin', 'trainer'), async (req, res, next) => {
+router.put("/:id", requireAuth, requireRole("admin", "profesor"), async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id de la clase no es válido." });
+    }
+
     const gymClass = await GymClass.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true,
-    });
-    if (!gymClass) return res.status(404).json({ message: 'Clase no encontrada' });
-    return res.json(gymClass);
+      runValidators: true
+    }).populate("trainer");
+
+    if (!gymClass) {
+      return res.status(404).json({ error: "Clase no encontrada." });
+    }
+
+    res.json(gymClass);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res, next) => {
+router.delete("/:id", requireAuth, requireRole("admin"), async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id de la clase no es válido." });
+    }
+
     const gymClass = await GymClass.findByIdAndDelete(req.params.id);
-    if (!gymClass) return res.status(404).json({ message: 'Clase no encontrada' });
-    return res.json({ message: 'Clase eliminada correctamente' });
+
+    if (!gymClass) {
+      return res.status(404).json({ error: "Clase no encontrada." });
+    }
+
+    res.json({ message: "Clase eliminada correctamente." });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 

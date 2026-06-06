@@ -1,62 +1,93 @@
-const express = require('express');
-const Booking = require('../models/Booking');
-const { authenticate, authorizeRoles } = require('../middlewares/auth');
+const express = require("express");
+const mongoose = require("mongoose");
+const Booking = require("../models/Booking");
+const { requireAuth } = require("../middlewares/authMiddleware");
+const { requireRole } = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
 
-router.get('/', authenticate, async (req, res, next) => {
+router.get("/", requireAuth, async (req, res, next) => {
   try {
     const bookings = await Booking.find()
-      .populate('member')
-      .populate({ path: 'gymClass', populate: { path: 'trainer' } })
+      .populate("member")
+      .populate({ path: "gymClass", populate: { path: "trainer" } })
       .sort({ bookedAt: -1 });
-    return res.json(bookings);
+
+    res.json(bookings);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.get('/:id', authenticate, async (req, res, next) => {
+router.get("/:id", requireAuth, async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id de la reserva no es válido." });
+    }
+
     const booking = await Booking.findById(req.params.id)
-      .populate('member')
-      .populate({ path: 'gymClass', populate: { path: 'trainer' } });
-    if (!booking) return res.status(404).json({ message: 'Reserva no encontrada' });
-    return res.json(booking);
+      .populate("member")
+      .populate({ path: "gymClass", populate: { path: "trainer" } });
+
+    if (!booking) {
+      return res.status(404).json({ error: "Reserva no encontrada." });
+    }
+
+    res.json(booking);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.post('/', authenticate, async (req, res, next) => {
+router.post("/", requireAuth, async (req, res, next) => {
   try {
     const booking = await Booking.create(req.body);
-    return res.status(201).json(booking);
+    const populatedBooking = await booking.populate([
+      { path: "member" },
+      { path: "gymClass", populate: { path: "trainer" } }
+    ]);
+    res.status(201).json(populatedBooking);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.put('/:id', authenticate, authorizeRoles('admin', 'trainer'), async (req, res, next) => {
+router.put("/:id", requireAuth, requireRole("admin", "profesor"), async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id de la reserva no es válido." });
+    }
+
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true,
+      runValidators: true
     });
-    if (!booking) return res.status(404).json({ message: 'Reserva no encontrada' });
-    return res.json(booking);
+
+    if (!booking) {
+      return res.status(404).json({ error: "Reserva no encontrada." });
+    }
+
+    res.json(booking);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res, next) => {
+router.delete("/:id", requireAuth, requireRole("admin"), async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id de la reserva no es válido." });
+    }
+
     const booking = await Booking.findByIdAndDelete(req.params.id);
-    if (!booking) return res.status(404).json({ message: 'Reserva no encontrada' });
-    return res.json({ message: 'Reserva eliminada correctamente' });
+
+    if (!booking) {
+      return res.status(404).json({ error: "Reserva no encontrada." });
+    }
+
+    res.json({ message: "Reserva eliminada correctamente." });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 

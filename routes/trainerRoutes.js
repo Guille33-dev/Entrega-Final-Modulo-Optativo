@@ -1,57 +1,83 @@
-const express = require('express');
-const Trainer = require('../models/Trainer');
-const { authenticate, authorizeRoles } = require('../middlewares/auth');
+const express = require("express");
+const mongoose = require("mongoose");
+const Trainer = require("../models/Trainer");
+const { requireAuth } = require("../middlewares/authMiddleware");
+const { requireRole } = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const trainers = await Trainer.find().sort({ name: 1 });
-    return res.json(trainers);
+    res.json(trainers);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id del entrenador no es válido." });
+    }
+
     const trainer = await Trainer.findById(req.params.id);
-    if (!trainer) return res.status(404).json({ message: 'Entrenador no encontrado' });
-    return res.json(trainer);
+
+    if (!trainer) {
+      return res.status(404).json({ error: "Entrenador no encontrado." });
+    }
+
+    res.json(trainer);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.post('/', authenticate, authorizeRoles('admin'), async (req, res, next) => {
+router.post("/", requireAuth, requireRole("admin"), async (req, res, next) => {
   try {
     const trainer = await Trainer.create(req.body);
-    return res.status(201).json(trainer);
+    res.status(201).json(trainer);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.put('/:id', authenticate, authorizeRoles('admin'), async (req, res, next) => {
+router.put("/:id", requireAuth, requireRole("admin"), async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id del entrenador no es válido." });
+    }
+
     const trainer = await Trainer.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true,
+      runValidators: true
     });
-    if (!trainer) return res.status(404).json({ message: 'Entrenador no encontrado' });
-    return res.json(trainer);
+
+    if (!trainer) {
+      return res.status(404).json({ error: "Entrenador no encontrado." });
+    }
+
+    res.json(trainer);
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-router.delete('/:id', authenticate, authorizeRoles('admin'), async (req, res, next) => {
+router.delete("/:id", requireAuth, requireRole("admin"), async (req, res, next) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: "El id del entrenador no es válido." });
+    }
+
     const trainer = await Trainer.findByIdAndDelete(req.params.id);
-    if (!trainer) return res.status(404).json({ message: 'Entrenador no encontrado' });
-    return res.json({ message: 'Entrenador eliminado correctamente' });
+
+    if (!trainer) {
+      return res.status(404).json({ error: "Entrenador no encontrado." });
+    }
+
+    res.json({ message: "Entrenador eliminado correctamente." });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 

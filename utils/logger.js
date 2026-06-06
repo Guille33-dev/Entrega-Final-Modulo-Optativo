@@ -1,24 +1,19 @@
-function log(level, message, metadata = {}) {
-  const entry = {
-    timestamp: new Date().toISOString(),
-    level,
-    message,
-    ...metadata,
-  };
-
-  const output = JSON.stringify(entry);
-
-  if (level === 'error') {
-    console.error(output);
-  } else if (level === 'warn') {
-    console.warn(output);
-  } else {
-    console.log(output);
-  }
+function formatLog(level, message, meta = {}) {
+  const timestamp = new Date().toISOString();
+  const base = { timestamp, level, message, ...meta };
+  return JSON.stringify(base);
 }
 
-module.exports = {
-  info: (message, metadata) => log('info', message, metadata),
-  warn: (message, metadata) => log('warn', message, metadata),
-  error: (message, metadata) => log('error', message, metadata),
+const logger = {
+  info(message, meta) {
+    console.log(formatLog("info", message, meta));
+  },
+  warn(message, meta) {
+    console.warn(formatLog("warn", message, meta));
+  },
+  error(message, meta) {
+    console.error(formatLog("error", message, meta));
+  }
 };
+
+module.exports = { logger };

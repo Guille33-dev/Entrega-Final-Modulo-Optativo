@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  p.lead Entra con una cuenta de admin o profesor para programar clases.
+  if error
+    p.error= error
+  form.form(method="POST", action="/login")
+    label(for="username") Usuario
+    input(type="text", name="username", id="username", required, autocomplete="username", placeholder="admin")
+
+    label(for="password") Contraseña
+    input(type="password", name="password", id="password", required, autocomplete="current-password", placeholder="admin123")
+
+    button.button(type="submit") Entrar

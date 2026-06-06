@@ -1,19 +1,19 @@
-const logger = require('../utils/logger');
+const { logger } = require("../utils/logger");
 
 function requestLogger(req, res, next) {
   const startedAt = Date.now();
 
-  res.on('finish', () => {
-    logger.info('HTTP request', {
+  res.on("finish", () => {
+    logger.info("HTTP request", {
       method: req.method,
       path: req.originalUrl,
       statusCode: res.statusCode,
       durationMs: Date.now() - startedAt,
-      ip: req.ip,
+      ip: req.ip
     });
   });
 
   next();
 }
 
-module.exports = requestLogger;
+module.exports = { requestLogger };

@@ -4,17 +4,10 @@ block content
   section.hero
     h1= title
     p= description
-    p Esta aplicación recopila los contenidos principales del curso: Express, Pug, MongoDB, Mongoose, JWT, tests, OpenAPI, logs, health check y GitHub Actions.
+    p Consulta la programación, revisa los entrenadores disponibles y organiza las clases del centro desde un panel sencillo.
     div.actions
-      a.button(href="/classes") Ver clases
-      a.button.secondary(href="/classes/new") Crear clase
-  section.card-grid
-    article.card
-      h2 API REST
-      p Incluye CRUD para entrenadores, clases, socios y reservas.
-    article.card
-      h2 Seguridad
-      p Incluye autenticación JWT, refresh token y rutas protegidas por rol.
-    article.card
-      h2 Despliegue
-      p Incluye workflow de GitHub Actions, cobertura y despliegue en Render.
+      a.button(href="/classes") Ver clases programadas
+      if canCreateClasses
+        a.button.secondary(href="/classes/new") Programar clase
+      else
+        a.button.secondary(href="/login") Acceso del equipo
