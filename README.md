@@ -1,8 +1,26 @@
-# GymManager API - Entrega Final Node.js
+# GymManager API
 
-Aplicación final de gestión de gimnasio desarrollada con Node.js, Express, MongoDB, Mongoose, Pug, JWT, tests, OpenAPI, logs, health check, GitHub Actions y despliegue en Render.
+Aplicación de gestión de gimnasio desarrollada con Node.js, Express, MongoDB, Mongoose, Pug, JWT, tests, OpenAPI, logs, health check, GitHub Actions y despliegue en Render.
 
-La temática es distinta a la utilizada durante el curso: entrenadores, clases, socios y reservas de un gimnasio.
+GymManager permite gestionar entrenadores, clases, socios, reservas y usuarios desde una API REST y varias vistas web.
+
+## Capturas de pantalla
+
+### Health en Render
+
+![Health en Render](https://res.cloudinary.com/dahfnhc1h/image/upload/v1780790677/Captura_de_pantalla_2026-06-07_020423_h3vkbb.png)
+
+### Configuración del health check
+
+![Configuración del health check en Render](https://res.cloudinary.com/dahfnhc1h/image/upload/v1780790753/Captura_de_pantalla_2026-06-07_020536_ns0vyz.png)
+
+### Logs de Render
+
+![Logs de Render](https://res.cloudinary.com/dahfnhc1h/image/upload/v1780790904/Captura_de_pantalla_2026-06-07_020754_j3jikw.png)
+
+### GitHub Actions
+
+![Workflow de GitHub Actions en verde](https://res.cloudinary.com/dahfnhc1h/image/upload/v1780790408/Captura_de_pantalla_2026-06-07_015947_jul2nm.png)
 
 ## Tecnologías utilizadas
 
@@ -20,8 +38,6 @@ La temática es distinta a la utilizada durante el curso: entrenadores, clases, 
 - Render
 
 ## Estructura del proyecto
-
-La estructura sigue el estilo del proyecto de referencia de la UD6:
 
 ```text
 app.js
@@ -42,11 +58,11 @@ postman/
 
 - `index.js`: arranca la aplicación, conecta con MongoDB y levanta el servidor.
 - `app.js`: configura Express, middlewares, vistas Pug y rutas.
-- `db.js`: conexión a MongoDB.
+- `db.js`: gestiona la conexión a MongoDB.
 - `middlewares/authMiddleware.js`: valida el access token.
-- `middlewares/roleMiddleware.js`: comprueba roles.
+- `middlewares/roleMiddleware.js`: comprueba permisos por rol.
 - `utils/tokenUtils.js`: genera y verifica tokens JWT.
-- `utils/logger.js`: genera logs en JSON.
+- `utils/logger.js`: genera logs en formato JSON.
 
 ## Instalación
 
@@ -98,7 +114,7 @@ http://localhost:3000
 
 ## Usuarios de prueba
 
-Para crear los usuarios de prueba y entrenadores iniciales:
+Para crear usuarios de prueba y entrenadores iniciales:
 
 ```bash
 npm run seed:admin
@@ -123,9 +139,9 @@ Las clases solo pueden crearlas cuentas con rol `admin` o `profesor`.
 | Vista | Ruta | Descripción |
 |---|---|---|
 | Página principal | `/` | Inicio de la aplicación |
-| Listar recursos | `/classes` | Lista las clases del gimnasio |
-| Crear recurso | `/classes/new` | Formulario para crear una clase |
-| Inicio de sesión | `/login` | Acceso para admin o profesor |
+| Listado de clases | `/classes` | Muestra las clases programadas |
+| Programar clase | `/classes/new` | Formulario para crear una clase |
+| Acceso del equipo | `/login` | Login para admin o profesor |
 
 ## Modelos MongoDB / Mongoose
 
@@ -280,18 +296,3 @@ El servicio de Render usa:
 ```yaml
 healthCheckPath: /health
 ```
-
-## Capturas de pantalla
-
-Las capturas reales para la entrega deben guardarse en:
-
-```text
-docs/render-capturas/
-```
-
-Capturas recomendadas:
-
-1. `/health` funcionando en Render.
-2. Configuración de Render con `Health Check Path: /health`.
-3. Logs visibles en Render.
-4. Workflow de GitHub Actions en verde.
